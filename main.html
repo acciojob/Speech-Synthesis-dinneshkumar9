@@ -37,6 +37,51 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
+    // Get references to the DOM elements
+  //   const msg = new SpeechSynthesisUtterance();
+  // let voices = [];
+  // const voicesDropdown = document.querySelector('[name="voice"]');
+  // const options = document.querySelectorAll('[type="range"], [name="text"]');
+  // const speakButton = document.querySelector('#speak');
+  // const stopButton = document.querySelector('#stop');
+
+  // Get the list of available voices and populate the voice select
+  speechSynthesis.addEventListener('voiceschanged', getVoices);
+  function getVoices() {
+    voices = speechSynthesis.getVoices();
+    voices.forEach(voice => {
+      const option = document.createElement('option');
+      option.value = voice.name;
+      option.innerHTML = `${voice.name} (${voice.lang})`;
+      voicesDropdown.appendChild(option);
+    });
+  }
+
+  // Set the selected voice and properties when the form is changed
+  voicesDropdown.addEventListener('change', setVoice);
+  options.forEach(option => option.addEventListener('change', setOption));
+  function setVoice() {
+    msg.voice = voices.find(voice => voice.name === this.value);
+    toggle();
+  }
+  function setOption() {
+    msg[this.name] = this.value;
+    toggle();
+  }
+
+  // Start speaking when the speak button is clicked
+  speakButton.addEventListener('click', toggle);
+  function toggle(startOver = true) {
+    speechSynthesis.cancel();
+    if (startOver) {
+      speechSynthesis.speak(msg);
+    }
+  }
+  
+  // stop speaking when the stop button is clicked
+  stopButton.addEventListener('click', () => toggle(false));
+
+
 </script>
 
 </body>
